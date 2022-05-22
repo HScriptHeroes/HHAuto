@@ -40,4 +40,4 @@ function addCss() {
     GM_addStyle('#sliding-popups#sliding-popups { z-index : 1}');
 }
 
-export { addCss };
+export { addCss }; 
