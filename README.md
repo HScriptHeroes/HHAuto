@@ -1,0 +1,2 @@
+# HHAuto
+HentaiHeroes Script
