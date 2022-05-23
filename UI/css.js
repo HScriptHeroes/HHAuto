@@ -1,4 +1,3 @@
-function addCss() {
     GM_addStyle('.HHAutoScriptMenu .switch { position: relative; display: inline-block; width: 34px; height: 20px }/* The switch - the box around the slider */ '
         + '.HHAutoScriptMenu .switch input { display:none } /* Hide default HTML checkbox */ '
         + '.HHAutoScriptMenu .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; -webkit-transition: .4s; transition: .4s; } /* The slider */'
@@ -40,6 +39,3 @@ function addCss() {
     GM_addStyle('#sliding-popups#sliding-popups { z-index : 1}');
     
     alert("CSS Load");
-}
-
-export { addCss }; 
