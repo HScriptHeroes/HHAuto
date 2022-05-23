@@ -3,7 +3,7 @@
 // @namespace    https://github.com/HScriptHeroes/HHAuto
 // @version      5.6.84
 // @description  Open the menu in HaremHeroes(topright) to toggle AutoControlls. Supports AutoSalary, AutoContest, AutoMission, AutoQuest, AutoTrollBattle, AutoArenaBattle and AutoPachinko(Free), AutoLeagues, AutoChampions and AutoStatUpgrades. Messages are printed in local console.
-// @author       JD and Dorten(a bit), Roukys, cossname, YotoTheOne, CLSchwab, deuxge, react31
+// @author       JD and Dorten(a bit), Roukys, cossname, YotoTheOne, CLSchwab, deuxge, react31, RuperSama
 // @match        http*://*.haremheroes.com/*
 // @match        http*://*.hentaiheroes.com/*
 // @match        http*://*.gayharem.com/*
@@ -11,17 +11,16 @@
 // @match        http*://*.hornyheroes.com/*
 // @match        http*://*.pornstarharem.com/*
 // @grant        GM_addStyle
-// @grant        GM_registerMenuCommand
-// @grant        GM_unregisterMenuCommand
-// @grant        GM.openInTab
+// @grant        GM_getResourceText
+// @resource   IMPORTED_CSS https://raw.githubusercontent.com/HScriptHeroes/HHAuto/main/UI/Scriptstyle.css
 // @license      MIT
 // @updateURL    https://github.com/HScriptHeroes/HHAuto/raw/main/HHAuto.user.js
 // @downloadURL  https://github.com/HScriptHeroes/HHAuto/raw/main/HHAuto.user.js
 // ==/UserScript==
 
-import { addCss } from 'https://raw.githubusercontent.com/HScriptHeroes/HHAuto/main/UI/css.js';
+const my_css = GM_getResourceText("IMPORTED_CSS");
+GM_addStyle(my_css);
 
-addCss();
 
 function replaceCheatClick() {
     is_cheat_click = function (e) {
@@ -8504,7 +8503,7 @@ var setDefaults = function (force = false) {
 function cmpVersions(a, b) {
     return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
 }
-
+/*
 function getLanguageCode() {
     let HHAuto_Lang = 'en';
     if ($('html')[0].lang === 'en') {
@@ -8524,7 +8523,7 @@ function getLanguageCode() {
     }
     return HHAuto_Lang;
 }
-
+*/
 function getTextForUI(id, type) {
     let HHAuto_Lang = getLanguageCode();
     let defaultLanguageText = null;
