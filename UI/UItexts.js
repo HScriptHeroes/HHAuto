@@ -44,7 +44,3 @@ function getTextForUI(id, type) {
         }
     }
 }
-
-
-
-export { getLanguageCode, getTextForUI }
