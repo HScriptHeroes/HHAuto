@@ -1,5 +1,6 @@
 
 function getLanguageCode() {
+    alert("getLanguageCode");
     let HHAuto_Lang = 'en';
     if ($('html')[0].lang === 'en') {
         HHAuto_Lang = 'en';
