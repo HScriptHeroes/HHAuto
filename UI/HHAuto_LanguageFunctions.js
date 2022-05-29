@@ -1,5 +1,4 @@
 function getLanguageCode() {
-    console.log("getLanguageCode");
     let HHAuto_Lang = 'en';
     if ($('html')[0].lang === 'en') {
         HHAuto_Lang = 'en';
@@ -20,7 +19,6 @@ function getLanguageCode() {
 }
 
 function getTextForUI(id, type) {
-    console.log("getTextForUI");
     let HHAuto_Lang = getLanguageCode();
     let defaultLanguageText = null;
     let defaultLanguageVersion = "0";
