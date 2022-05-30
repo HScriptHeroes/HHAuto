@@ -19,12 +19,16 @@
 // @grant        GM_addStyle
 // @grant        GM_getResourceText
 // @resource   IMPORTED_CSS https://raw.githubusercontent.com/HScriptHeroes/HHAuto/main/UI/Scriptstyle.css
-//@antifeature Importing remote JS, the number at the end is for force update when some change is upload in github.
+//@antifeature Importing remote JS, the number at the end is for force update when some change is upload in github. the unsafeWindows is for use external funciton of this file
 // @grant unsafeWindow
-// @require https://raw.githubusercontent.com/HScriptHeroes/HHAuto/main/UI/HHAuto_LanguageFunctions.js?1
-// @require https://raw.githubusercontent.com/HScriptHeroes/HHAuto/main/UI/HHAuto_ToolTips.js?1
-
-
+// @require https://raw.githubusercontent.com/HScriptHeroes/HHAuto/main/UI/HHAuto_LanguageFunctions.js?2
+// @require https://raw.githubusercontent.com/HScriptHeroes/HHAuto/main/UI/HHAuto_ToolTips.js?2
+// @require https://raw.githubusercontent.com/HScriptHeroes/HHAuto/main/UI/HHAuto_LanguageFunctions.js?2
+// @require https://raw.githubusercontent.com/HScriptHeroes/HHAuto/main/UI/HHAuto_TextFormating.js?2
+// @require https://raw.githubusercontent.com/HScriptHeroes/HHAuto/main/UI/HHAuto_MainUI.js?2
+// @require https://raw.githubusercontent.com/HScriptHeroes/HHAuto/main/MathFunctions/HHAuto_CalculateFunctions.js?2
+// @require https://raw.githubusercontent.com/HScriptHeroes/HHAuto/main/GlobalVars/HHAuto_HHEnvVariables.js?2
+// @require https://raw.githubusercontent.com/HScriptHeroes/HHAuto/main/GlobalVars/HHAuto_HHKnownEnvironnements.js?2
 
 // ==/UserScript==
 
