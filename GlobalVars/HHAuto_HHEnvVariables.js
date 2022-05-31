@@ -22,7 +22,7 @@ HHEnvVariables["global"].minSecsBeforeGoHomeAfterActions = 10;
 HHEnvVariables["global"].dailyRewardMaxRemainingTime = 2 * 60 * 60;
 HHEnvVariables["global"].maxCollectionDelay = 2 * 60 * 60;
 HHEnvVariables["global"].STOCHASTIC_SIM_RUNS = 10000;
-HHEnvVariables["global"].PoVTimestampAttributeName = "data-time-stamp";
+HHEnvVariables["global"].PoVPoGTimestampAttributeName = "data-time-stamp";
 HHEnvVariables["global"].ELEMENTS =
 {
     chance: {
@@ -89,7 +89,6 @@ HHEnvVariables["global"].trollzList = ["Latest",
     "Nike",
     "Sake",
     "WereBunny Police"];
-
 HHEnvVariables["global"].leaguesList = ["Wanker I",
     "Wanker II",
     "Wanker III",
@@ -128,7 +127,6 @@ switch (getLanguageCode()) {
             "Dicktateur III"];
         break;
     default:
-
         break;
 }
 HHEnvVariables["global"].haremSortingFunctions = {};
@@ -224,7 +222,6 @@ HHEnvVariables["global"].pagesKnownList.push("Club");
 HHEnvVariables["global"].pagesIDPantheon = "pantheon";
 HHEnvVariables["global"].pagesURLPantheon = "/pantheon.html";
 HHEnvVariables["global"].pagesKnownList.push("Pantheon");
-
 HHEnvVariables["global"].pagesIDPantheonPreBattle = "pantheon-pre-battle";
 HHEnvVariables["global"].pagesURLPantheonPreBattle = "/pantheon-pre-battle.html";
 HHEnvVariables["global"].pagesKnownList.push("PantheonPreBattle");
@@ -276,6 +273,10 @@ HHEnvVariables["global"].pagesIDPoV = "path-of-valor";
 HHEnvVariables["global"].pagesURLPoV = "/path-of-valor.html";
 HHEnvVariables["global"].pagesKnownList.push("PoV");
 
+HHEnvVariables["global"].pagesIDPoG = "path-of-glory";
+HHEnvVariables["global"].pagesURLPoG = "/path-of-glory.html";
+HHEnvVariables["global"].pagesKnownList.push("PoG");
+
 HHEnvVariables["global"].pagesIDPowerplacemain = "powerplacemain";
 HHEnvVariables["global"].pagesKnownList.push("Powerplacemain");
 
@@ -305,10 +306,11 @@ HHEnvVariables["global"].isEnabledLeagues = true;
 HHEnvVariables["global"].isEnabledDailyRewards = true;
 HHEnvVariables["global"].isEnabledShop = true;
 HHEnvVariables["global"].isEnabledSalary = true;
+HHEnvVariables["global"].isEnabledPoVPoG = true;
 HHEnvVariables["global"].isEnabledPoV = true;
+HHEnvVariables["global"].isEnabledPoG = true;
 HHEnvVariables["global"].isEnabledDailyGoals = true;
 
-/*Variable to be deleted when some new function arrive in N version of the game*/
 HHEnvVariables["HH_test"].isEnabledDailyRewards = false;// to remove if daily rewards arrives in test
 ["CH_prod", "NCH_prod"].forEach((element) => {
     HHEnvVariables[element].trollzList = ['Latest',
@@ -319,6 +321,7 @@ HHEnvVariables["HH_test"].isEnabledDailyRewards = false;// to remove if daily re
         'The Mimic'];
     HHEnvVariables[element].isEnabledClubChamp = false;// to remove when Club Champs arrives in Comix
     HHEnvVariables[element].isEnabledPantheon = false;// to remove when Pantheon arrives in Comix
+    HHEnvVariables[element].isEnabledPoG = false;
 })
 HHEnvVariables["SH_prod"].isEnabledSideQuest = false;// to remove when SideQuest arrives in hornyheroes
 HHEnvVariables["SH_prod"].isEnabledPowerPlaces = false;// to remove when PoP arrives in hornyheroes
@@ -327,13 +330,18 @@ HHEnvVariables["SH_prod"].isEnabledAllChamps = false;// to remove when Champs ar
 HHEnvVariables["SH_prod"].isEnabledChamps = false;// to remove when Champs arrives in hornyheroes
 HHEnvVariables["SH_prod"].isEnabledClubChamp = false;// to remove when Club Champs arrives in hornyheroes
 HHEnvVariables["SH_prod"].isEnabledPantheon = false;// to remove when Pantheon arrives in hornyheroes
+HHEnvVariables["SH_prod"].isEnabledPoVPoG = false;
 HHEnvVariables["SH_prod"].isEnabledPoV = false;// to remove when PoV arrives in hornyheroes
-
-HHEnvVariables["PH_prod"].isEnabledPowerPlaces = false;// to remove when PoP arrives in pornstar
-HHEnvVariables["PH_prod"].isEnabledMythicPachinko = false;// to remove when Mythic Pachinko arrives in pornstar
-//HHEnvVariables["PH_prod"].isEnabledAllChamps = false;// to remove when Champs arrives in pornstar
-//HHEnvVariables["PH_prod"].isEnabledChamps = false;// to remove when Champs arrives in pornstar
-HHEnvVariables["PH_prod"].isEnabledClubChamp = false;// to remove when Club Champs arrives in pornstar
-HHEnvVariables["PH_prod"].isEnabledPantheon = false;// to remove when Pantheon arrives in pornstar
-HHEnvVariables["PH_prod"].isEnabledPoV = false;// to remove when PoV arrives in pornstar
-HHEnvVariables["PH_prod"].trollzList = ['Latest', 'Headmistress Asa Akira'];
+HHEnvVariables["SH_prod"].isEnabledPoG = false;// to remove when PoG arrives in hornyheroes
+["PH_prod", "NPH_prod"].forEach((element) => {
+    HHEnvVariables[element].trollzList = ['Latest',
+        'Headmistress Asa Akira',
+        'Sammy Jayne'];
+    HHEnvVariables[element].isEnabledPowerPlaces = false;// to remove when PoP arrives in pornstar
+    HHEnvVariables[element].isEnabledMythicPachinko = false;// to remove when Mythic Pachinko arrives in pornstar
+    HHEnvVariables[element].isEnabledClubChamp = false;// to remove when Club Champs arrives in pornstar
+    HHEnvVariables[element].isEnabledPantheon = false;// to remove when Pantheon arrives in pornstar
+    HHEnvVariables[element].isEnabledPoVPoG = false;
+    HHEnvVariables[element].isEnabledPoV = false;// to remove when PoV arrives in pornstar
+    HHEnvVariables[element].isEnabledPoG = false;// to remove when PoG arrives in pornstar
+})
