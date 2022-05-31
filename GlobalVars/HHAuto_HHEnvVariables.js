@@ -336,5 +336,4 @@ HHEnvVariables["PH_prod"].isEnabledMythicPachinko = false;// to remove when Myth
 HHEnvVariables["PH_prod"].isEnabledClubChamp = false;// to remove when Club Champs arrives in pornstar
 HHEnvVariables["PH_prod"].isEnabledPantheon = false;// to remove when Pantheon arrives in pornstar
 HHEnvVariables["PH_prod"].isEnabledPoV = false;// to remove when PoV arrives in pornstar
-HHEnvVariables["PH_prod"].trollzList = ['Latest',
-    'Headmistress Asa Akira'];
+HHEnvVariables["PH_prod"].trollzList = ['Latest', 'Headmistress Asa Akira'];
