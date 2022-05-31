@@ -1,10 +1,14 @@
 var updateData = function () {
+    //logHHAuto("updating UI");
     document.querySelectorAll("div#sMenu input[pattern]").forEach(currentInput => {
         currentInput.checkValidity();
     });
-    if (getStoredValue("HHAuto_Setting_showInfo") == "true") {
+    if (getStoredValue("HHAuto_Setting_showInfo") == "true") // && busy==false // && getPage()==getHHScriptVars("pagesIDHome")
+    {
         var Tegzd = '';
         Tegzd += (getStoredValue("HHAuto_Setting_master") === "true" ? "<span style='color:LimeGreen'>HH auto ++ ON" : "<span style='color:red'>HH auto ++ OFF") + '</span>';
+        //Tegzd+=(getStoredValue("HHAuto_Setting_master") ==="true"?"<span style='color:LimeGreen'>"+getTextForUI("master","elementText")+" : ON":"<span style='color:red'>"+getTextForUI("master","elementText")+" : OFF")+'</span>';
+        //Tegzd+=getTextForUI("master","elementText")+' : '+(getStoredValue("HHAuto_Setting_master") ==="true"?"<span style='color:LimeGreen'>ON":"<span style='color:red'>OFF")+'</span>';
         if (getStoredValue("HHAuto_Setting_paranoia") == "true") {
             Tegzd += '<br>' + getStoredValue("HHAuto_Temp_pinfo") + ': ' + getTimeLeft('paranoiaSwitch');
         }
@@ -17,6 +21,10 @@ var updateData = function () {
         if (getHHScriptVars('isEnabledSeason', false) && getStoredValue("HHAuto_Setting_autoSeason") == "true") {
             Tegzd += '<br>' + getTextForUI("autoSeasonTitle", "elementText") + ' : ' + getHHVars('Hero.energies.kiss.amount') + '/' + getHHVars('Hero.energies.kiss.max_amount') + ' (' + getTimeLeft('nextSeasonTime') + ')';
         }
+        /*if (getHHScriptVars('isEnabledSeason',false) && getStoredValue("HHAuto_Setting_autoSeasonCollect") =="true")
+        {
+            Tegzd += '<br>'+getTextForUI("autoSeasonCollect","elementText")+" "+getTextForUI("autoSeasonTitle","elementText")+' : '+getTimeLeft('nextSeasonCollectTime');
+        }*/
         if (getHHScriptVars('isEnabledLeagues', false) && getStoredValue("HHAuto_Setting_autoLeagues") == "true") {
             Tegzd += '<br>' + getTextForUI("autoLeaguesTitle", "elementText") + ' : ' + getHHVars('Hero.energies.challenge.amount') + '/' + getHHVars('Hero.energies.challenge.max_amount') + ' (' + getTimeLeft('nextLeaguesTime') + ')';
         }
@@ -58,15 +66,27 @@ var updateData = function () {
         if (getStoredValue("HHAuto_Temp_haveExp")) {
             Tegzd += '<br>' + getTextForUI("autoExpW", "elementText") + ' : ' + add1000sSeparator(getStoredValue("HHAuto_Temp_haveExp"));
         }
-
+        /*if (isJSON(getStoredValue("HHAuto_Temp_BoostersData")))
+        {
+            for(let boost of JSON.parse(getStoredValue("HHAuto_Temp_BoostersData")))
+            {
+                Tegzd += `<br>${boost.rarity} <img class="iconImg" src="${boost.ico}" /> : ${getBoosterExpiration(boost)}`;
+            }
+        }*/
+        //if (Tegzd.length>0)
+        //{
         document.getElementById('pInfo').style.display = 'block';
-        document.getElementById('pInfo').innerHTML = Tegzd;
+        document.getElementById('pInfo').innerHTML = Tegzd;  //document.getElementById('pInfo').textContent=Tegzd;
+        // }
+        // else
+        // {
+        //     document.getElementById('pInfo').style.display='none';
+        // }
     }
     else {
         document.getElementById('pInfo').style.display = 'none';
     }
 };
-
 
 var createUI = function () {
 
@@ -262,17 +282,6 @@ var createUI = function () {
         + `</label>`
         + `</div>`
         + `</div>`
-        + `<div class="labelAndButton">`
-        + `<span class="HHMenuItemName">${getTextForUI("PoAMaskRewards", "elementText")}</span>`
-        + `<div class="tooltipHH">`
-        + `<span class="tooltipHHtext">${getTextForUI("PoAMaskRewards", "tooltip")}</span>`
-        + `<label class="switch">`
-        + `<input id="PoAMaskRewards" type="checkbox">`
-        + `<span class="slider round">`
-        + `</span>`
-        + `</label>`
-        + `</div>`
-        + `</div>`
         + `</div>`
         + `<div class="optionsColumn">`
         + `<div class="labelAndButton">`
@@ -286,28 +295,15 @@ var createUI = function () {
         + `</label>`
         + `</div>`
         + `</div>`
-        + `<div id="isEnabledPoV">`
         + `<div class="labelAndButton">`
-        + `<span class="HHMenuItemName">${getTextForUI("PoVMaskRewards", "elementText")}</span>`
+        + `<span class="HHMenuItemName">${getTextForUI("PoAMaskRewards", "elementText")}</span>`
         + `<div class="tooltipHH">`
-        + `<span class="tooltipHHtext">${getTextForUI("PoVMaskRewards", "tooltip")}</span>`
+        + `<span class="tooltipHHtext">${getTextForUI("PoAMaskRewards", "tooltip")}</span>`
         + `<label class="switch">`
-        + `<input id="PoVMaskRewards" type="checkbox">`
+        + `<input id="PoAMaskRewards" type="checkbox">`
         + `<span class="slider round">`
         + `</span>`
         + `</label>`
-        + `</div>`
-        + `</div>`
-        + `<div class="labelAndButton">`
-        + `<span class="HHMenuItemName">${getTextForUI("autoPoVCollect", "elementText")}</span>`
-        + `<div class="tooltipHH">`
-        + `<span class="tooltipHHtext">${getTextForUI("autoPoVCollect", "tooltip")}</span>`
-        + `<label class="switch">`
-        + `<input id="autoPoVCollect" type="checkbox">`
-        + `<span class="slider round">`
-        + `</span>`
-        + `</label>`
-        + `</div>`
         + `</div>`
         + `</div>`
         + `</div>`
@@ -653,6 +649,58 @@ var createUI = function () {
         + `</div>`
         + `</div>`
         + `</div>`
+        + `<div class="optionsRow">`
+        + `<div id="isEnabledPoVPoG" class="optionsBox">`
+        + `<div id="isEnabledPoV" class="internalOptionsRow" style="justify-content: space-evenly">`
+        + `<div class="labelAndButton">`
+        + `<span class="HHMenuItemName">${getTextForUI("PoVMaskRewards", "elementText")}</span>`
+        + `<div class="tooltipHH">`
+        + `<span class="tooltipHHtext">${getTextForUI("PoVMaskRewards", "tooltip")}</span>`
+        + `<label class="switch">`
+        + `<input id="PoVMaskRewards" type="checkbox">`
+        + `<span class="slider round">`
+        + `</span>`
+        + `</label>`
+        + `</div>`
+        + `</div>`
+        + `<div class="labelAndButton">`
+        + `<span class="HHMenuItemName">${getTextForUI("autoPoVCollect", "elementText")}</span>`
+        + `<div class="tooltipHH">`
+        + `<span class="tooltipHHtext">${getTextForUI("autoPoVCollect", "tooltip")}</span>`
+        + `<label class="switch">`
+        + `<input id="autoPoVCollect" type="checkbox">`
+        + `<span class="slider round">`
+        + `</span>`
+        + `</label>`
+        + `</div>`
+        + `</div>`
+        + `</div>`
+        + `<div id="isEnabledPoG" class="internalOptionsRow" style="justify-content: space-evenly">`
+        + `<div class="labelAndButton">`
+        + `<span class="HHMenuItemName">${getTextForUI("PoGMaskRewards", "elementText")}</span>`
+        + `<div class="tooltipHH">`
+        + `<span class="tooltipHHtext">${getTextForUI("PoGMaskRewards", "tooltip")}</span>`
+        + `<label class="switch">`
+        + `<input id="PoGMaskRewards" type="checkbox">`
+        + `<span class="slider round">`
+        + `</span>`
+        + `</label>`
+        + `</div>`
+        + `</div>`
+        + `<div class="labelAndButton">`
+        + `<span class="HHMenuItemName">${getTextForUI("autoPoGCollect", "elementText")}</span>`
+        + `<div class="tooltipHH">`
+        + `<span class="tooltipHHtext">${getTextForUI("autoPoGCollect", "tooltip")}</span>`
+        + `<label class="switch">`
+        + `<input id="autoPoGCollect" type="checkbox">`
+        + `<span class="slider round">`
+        + `</span>`
+        + `</label>`
+        + `</div>`
+        + `</div>`
+        + `</div>`
+        + `</div>`
+        + `</div>`
         + `<div id="isEnabledTrollBattle" class="optionsBoxWithTitle">`
         + `<div class="optionsBoxTitle">`
         + `<img class="iconImg" src="https://hh2.hh-content.com/pictures/design/menu/map.svg" />`
@@ -944,7 +992,7 @@ var createUI = function () {
         + `<span class="optionsBoxTitle">${getTextForUI("autoPantheonTitle", "elementText")}</span>`
         + `</div>`
         + `<div class="optionsBox">`
-        + `<div class="internalOptionsRow" style="justify-content: space-between">`
+        + `<div class="internalOptionsRow" style="justify-content: space-evenly">`
         + `<div class="labelAndButton">`
         + `<span class="HHMenuItemName">${getTextForUI("autoPantheon", "elementText")}</span>`
         + `<div class="tooltipHH">`
