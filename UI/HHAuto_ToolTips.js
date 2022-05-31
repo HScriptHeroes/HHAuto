@@ -144,6 +144,7 @@ HHAuto_ToolTips.en.menuExpLevel = { version: "5.6.24", elementText: "Enter targe
 HHAuto_ToolTips.en.menuExpAwakeningNeeded = { version: "5.6.24", elementText: "Girl need awakening ", tooltip: "" };
 HHAuto_ToolTips.en.PoAMaskRewards = { version: "5.6.24", elementText: "PoA mask claimed", tooltip: "Masked claimed rewards for Path of Attraction." };
 HHAuto_ToolTips.en.PoVMaskRewards = { version: "5.6.26", elementText: "PoV mask claimed", tooltip: "Masked claimed rewards for Path of Valor." };
+HHAuto_ToolTips.en.PoGMaskRewards = { version: "5.6.89", elementText: "PoG mask claimed", tooltip: "Masked claimed rewards for Path of Glory." };
 HHAuto_ToolTips.en.showTooltips = { version: "5.6.24", elementText: "Show tooltips", tooltip: "Show tooltip on menu." };
 HHAuto_ToolTips.en.showMarketTools = { version: "5.6.24", elementText: "Show market tools", tooltip: "Show Market tools." };
 HHAuto_ToolTips.en.useX10Fights = { version: "5.6.24", elementText: "Use x10", tooltip: "<p style='color:red'>/!\\ Kobans spending function /!\\<br>(" + HHAuto_ToolTips.en.spendKobans0.elementText + " must be ON)</p>If enabled : <br>Use x10 button if 10 fights or more to do (if not going under Koban bank value).<br>x50 takes precedence on x10 if all conditions are filled." };
@@ -193,6 +194,7 @@ HHAuto_ToolTips.en.menuCollectable = { version: "5.6.47", elementText: "Collecta
 HHAuto_ToolTips.en.menuCollectableText = { version: "5.6.47", elementText: "Please select the collectables you want to be automatically collected.", tooltip: "" };
 HHAuto_ToolTips.en.menuDailyCollectableText = { version: "5.6.49", elementText: "Please select the collectables you want to be immediately collected.", tooltip: "" };
 HHAuto_ToolTips.en.autoPoVCollect = { version: "5.6.49", elementText: "Collect PoV", tooltip: "if enabled : Automatically collect Path of Valor." };
+HHAuto_ToolTips.en.autoPoGCollect = { version: "5.6.89", elementText: "Collect PoG", tooltip: "if enabled : Automatically collect Path of Glory." };
 HHAuto_ToolTips.en.autoDailyGoalsCollect = { version: "5.6.54", elementText: "Collect daily Goals", tooltip: "Collect daily Goals if not collected 2 hours before end of HH day." };
 HHAuto_ToolTips.en.HaremSortMenuSortText = { version: "5.6.56", elementText: "Select the wanted harem sorting : ", tooltip: "" };
 HHAuto_ToolTips.en.date_acquired = { version: "5.6.56", elementText: "Date recruited", tooltip: "" };
@@ -202,7 +204,6 @@ HHAuto_ToolTips.en.power = { version: "5.6.56", elementText: "Power", tooltip: "
 HHAuto_ToolTips.en.upgrade_cost = { version: "5.6.56", elementText: "Upgrade cost", tooltip: "" };
 HHAuto_ToolTips.en.HaremSortMenuSortBy = { version: "5.6.56", elementText: "Sort by ", tooltip: "" };
 HHAuto_ToolTips.en.HaremSortMenuSortReverse = { version: "5.6.56", elementText: "Reverse", tooltip: "" };
-
 
 HHAuto_ToolTips.fr.saveDebug = { version: "5.6.24", elementText: "Sauver log", tooltip: "Sauvegarder un fichier journal de débogage." };
 HHAuto_ToolTips.fr.gitHub = { version: "5.6.24", elementText: "GitHub", tooltip: "Lien vers le projet GitHub." };
@@ -295,7 +296,6 @@ HHAuto_ToolTips.fr.autoTrollMythicByPassParanoia = { version: "5.6.24", elementT
 HHAuto_ToolTips.fr.buyMythicCombat = { version: "5.6.24", elementText: "Achat comb. pour mythique", tooltip: "<p style='color:red'>/!\\ Dépense des Kobans /!\\<br>(" + HHAuto_ToolTips.fr.spendKobans0.elementText + " doit être activé)</p>Si activé : achète des points de combat (poings) pendant les X dernières heures de l'événement mythique (sans dépasser la limite de la banque de kobans), passera outre la réserve de combats si nécessaire." };
 HHAuto_ToolTips.fr.buyMythicCombTimer = { version: "5.6.24", elementText: "Heures d'achat comb.", tooltip: "(Nombre entier)<br>X dernières heures de l'événement mythique" };
 HHAuto_ToolTips.fr.mythicGirlNext = { version: "5.6.24", elementText: "Vague mythique" };
-
 
 HHAuto_ToolTips.de.saveDebug = { version: "5.6.24", elementText: "Save Debug", tooltip: "Erlaube das Erstellen einer Debug Log Datei." };
 HHAuto_ToolTips.de.gitHub = { version: "5.6.24", elementText: "GitHub", tooltip: "Link zum GitHub Projekt." };
