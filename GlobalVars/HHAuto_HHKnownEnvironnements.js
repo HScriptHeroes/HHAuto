@@ -12,4 +12,4 @@ HHKnownEnvironnements["eroges.gayharem.com"] = { name: "EGH_prod", id: "hh_gay" 
 HHKnownEnvironnements["eroges.hentaiheroes.com"] = { name: "EHH_prod", id: "hh_hentai" };
 HHKnownEnvironnements["esprit.hentaiheroes.com"] = { name: "OGHH_prod", id: "hh_hentai" };
 HHKnownEnvironnements["www.pornstarharem.com"] = { name: "PH_prod", id: "hh_star" };
-
+HHKnownEnvironnements["nutaku.pornstarharem.com"] = { name: "NPH_prod", id: "hh_star" };
