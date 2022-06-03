@@ -21,28 +21,27 @@
 // @resource   IMPORTED_CSS https://raw.githubusercontent.com/HScriptHeroes/HHAuto/main/UI/Scriptstyle.css
 //@antifeature Importing remote JS, the number at the end is for force update when some change is upload in github. the unsafeWindows is for use external funciton of this file
 // @grant unsafeWindow
-// @require https://raw.githubusercontent.com/HScriptHeroes/HHAuto/main/UI/HHAuto_LanguageFunctions.js?2
 // @require https://raw.githubusercontent.com/HScriptHeroes/HHAuto/main/UI/HHAuto_ToolTips.js?2
 // @require https://raw.githubusercontent.com/HScriptHeroes/HHAuto/main/UI/HHAuto_LanguageFunctions.js?2
 // @require https://raw.githubusercontent.com/HScriptHeroes/HHAuto/main/UI/HHAuto_TextFormating.js?2
 // @require https://raw.githubusercontent.com/HScriptHeroes/HHAuto/main/UI/HHAuto_MainUI.js?2
 // @require https://raw.githubusercontent.com/HScriptHeroes/HHAuto/main/MathFunctions/HHAuto_CalculateFunctions.js?2
-// @require https://raw.githubusercontent.com/HScriptHeroes/HHAuto/main/GlobalVars/HHAuto_HHEnvVariables.js?2
 // @require https://raw.githubusercontent.com/HScriptHeroes/HHAuto/main/GlobalVars/HHAuto_HHKnownEnvironnements.js?2
+// @require https://raw.githubusercontent.com/HScriptHeroes/HHAuto/main/GlobalVars/HHAuto_HHEnvVariables.js?2
 
 // ==/UserScript==
+
 
 //Importing the CSS
 const my_css = GM_getResourceText("IMPORTED_CSS");
 GM_addStyle(my_css);
+
 
 function replaceCheatClick() {
     is_cheat_click = function (e) {
         return false;
     };
 }
-
-
 
 
 function addEventsOnMenuItems() {
@@ -153,16 +152,29 @@ function logHHAuto(...args) {
     var currentLoggingText;
     var nbLines;
     var maxLines = 500;
+
+    const getCircularReplacer = () => {
+        const seen = new WeakSet();
+        return (key, value) => {
+            if (typeof value === 'object' && value !== null) {
+                if (seen.has(value)) {
+                    return;
+                }
+                seen.add(value);
+            }
+            return value;
+        };
+    };
     if (args.length === 1) {
         if (typeof args[0] === 'string' || args[0] instanceof String) {
             text = args[0];
         }
         else {
-            text = JSON.stringify(args[0], null, 2);
+            text = JSON.stringify(args[0], getCircularReplacer(), 2);
         }
     }
     else {
-        text = JSON.stringify(args, null, 2);
+        text = JSON.stringify(args, getCircularReplacer(), 2);
     }
     currentLoggingText = getStoredValue("HHAuto_Temp_Logging") !== undefined ? getStoredValue("HHAuto_Temp_Logging") : "reset";
     //console.log("debug : ",currentLoggingText);
@@ -271,16 +283,16 @@ function getPage(checkUnknown = false) {
     var p = ob.getAttribute('page');
     let page = p;
     if (p == activitiesMainPage) {
-        if ($('h4.contests.selected').size() > 0) {
+        if ($('h4.contests.selected').length > 0) {
             page = getHHScriptVars("pagesIDContests");
         }
-        if ($('h4.missions.selected').size() > 0) {
+        if ($('h4.missions.selected').length > 0) {
             page = getHHScriptVars("pagesIDMissions");
         }
-        if ($('h4.daily_goals.selected').size() > 0) {
+        if ($('h4.daily_goals.selected').length > 0) {
             page = getHHScriptVars("pagesIDDailyGoals");
         }
-        if ($('h4.pop.selected').size() > 0) {
+        if ($('h4.pop.selected').length > 0) {
             // if on Pop menu
             var t;
             var popList = $("div.pop_list")
@@ -431,6 +443,9 @@ function gotoPage(page, inArgs, delay = -1) {
             break;
         case getHHScriptVars("pagesIDPoV"):
             togoto = getHHScriptVars("pagesURLPoV");
+            break;
+        case getHHScriptVars("pagesIDPoG"):
+            togoto = getHHScriptVars("pagesURLPoG");
             break;
         case (page.match(/^\/champions\/[123456]$/) || {}).input:
             togoto = page;
@@ -717,8 +732,7 @@ function doMissionStuff() {
             setTimer('nextMissionTime', 15);
             return true;
         }
-        logHHAuto("Missions parsed, mission list is:-");
-        logHHAuto(missions);
+        logHHAuto("Missions parsed, mission list is:", missions);
         if (missions.length > 0) {
             logHHAuto("Selecting mission from list.");
             var mission = getSuitableMission(missions);
@@ -751,32 +765,16 @@ function doMissionStuff() {
                     return true;
                 }
             }
-            var time = 0;
+            var time;
             for (var e in unsafeWindow.HHTimers.timers) {
-                try {
-                    if (unsafeWindow.HHTimers.timers[e].$elm.selector.includes("#missions_counter"))
-                        time = unsafeWindow.HHTimers.timers[e];
-                }
-                catch (e) {
-                    logHHAuto("Catched error : Could not parse mission timer : " + e);
-                }
-            }
-            if (time !== undefined) {
-                time = time.remainingTime;
-            }
-            if (time === undefined) {
-                //try again with different selector
-                for (e in unsafeWindow.HHTimers.timers) {
-                    try {
-                        if (unsafeWindow.HHTimers.timers[e].$elm.selector.includes(".after_gift"))
-                            time = unsafeWindow.HHTimers.timers[e];
+                if (!unsafeWindow.HHTimers.timers[e].$elm) { continue; }
+                let element = unsafeWindow.HHTimers.timers[e].$elm[0];
+                while (element) {
+                    if (element.id === "missions_counter" || (element.classList && element.classList.contains("after_gift"))) {
+                        time = unsafeWindow.HHTimers.timers[e].remainingTime;
+                        break;
                     }
-                    catch (e) {
-                        logHHAuto("Catched error : Could not parse after gift timer : " + e);
-                    }
-                }
-                if (time !== undefined) {
-                    time = time.remainingTime;
+                    element = element.parentNode;
                 }
             }
             if (time === undefined) {
@@ -855,12 +853,22 @@ function modulePathOfAttractionHide() {
 }
 
 function getPoVRemainingTime() {
-    const poVTimerRequest = `#pov_tab_container > div.pov-first-row > div.pov-timer.timer[${getHHScriptVars("PoVTimestampAttributeName")}]`;
+    const poVTimerRequest = `#pov_tab_container > div.potions-paths-first-row > div.potions-paths-timer.timer[${getHHScriptVars("PoVPoGTimestampAttributeName")}]`;
 
     if ($(poVTimerRequest).length > 0 && (getSecondsLeft("PoVRemainingTime") === 0 || getStoredValue("HHAuto_Temp_PoVEndDate") === undefined)) {
-        const poVTimer = Number($(poVTimerRequest).attr(getHHScriptVars("PoVTimestampAttributeName")));
+        const poVTimer = Number($(poVTimerRequest).attr(getHHScriptVars("PoVPoGTimestampAttributeName")));
         setTimer("PoVRemainingTime", poVTimer);
         setStoredValue("HHAuto_Temp_PoVEndDate", Math.ceil(new Date().getTime() / 1000) + poVTimer);
+    }
+}
+
+function getPoGRemainingTime() {
+    const poGTimerRequest = `#pog_tab_container > div.potions-paths-first-row > div.potions-paths-timer.timer[${getHHScriptVars("PoVPoGTimestampAttributeName")}]`;
+
+    if ($(poGTimerRequest).length > 0 && (getSecondsLeft("PoGRemainingTime") === 0 || getStoredValue("HHAuto_Temp_PoGEndDate") === undefined)) {
+        const poGTimer = Number($(poGTimerRequest).attr(getHHScriptVars("PoVPoGTimestampAttributeName")));
+        setTimer("PoGRemainingTime", poGTimer);
+        setStoredValue("HHAuto_Temp_PoGEndDate", Math.ceil(new Date().getTime() / 1000) + poGTimer);
     }
 }
 
@@ -889,13 +897,71 @@ function displayPoVRemainingTime() {
     }
 }
 
+function displayPoGRemainingTime() {
+    const displayTimer = $("#scriptPoGTimer").length === 0;
+    if (getTimer("PoGRemainingTime") !== -1) {
+        if ($("#HHAutoPoGTimer").length === 0) {
+            if (displayTimer) {
+                $('#homepage a[rel="path-of-glory"').prepend('<span id="HHAutoPoGTimer"></span>')
+                GM_addStyle('#HHAutoPoGTimer{position: absolute;top: 26px;left: 30px;width: 100px;color: #f461ff;font-size: .6rem ;z-index: 1;}');
+            }
+        }
+        else {
+            if (!displayTimer) {
+                $("#HHAutoPoGTimer")[0].remove();
+            }
+        }
+        if (displayTimer) {
+            $("#HHAutoPoGTimer")[0].innerText = getTimeLeft("PoGRemainingTime");
+        }
+    }
+    else {
+        if (getStoredValue("HHAuto_Temp_PoGEndDate") !== undefined) {
+            setTimer("PoGRemainingTime", getStoredValue("HHAuto_Temp_PoGEndDate") - (Math.ceil(new Date().getTime()) / 1000));
+        }
+    }
+}
+
 function moduleSimPoVMaskReward() {
     var arrayz;
     var nbReward;
     let modified = false;
-    arrayz = $('.pov-tier:not([style*="display:none"]):not([style*="display: none"])');
+    arrayz = $('.potions-paths-tier:not([style*="display:none"]):not([style*="display: none"])');
     //doesn sure about  " .purchase-pov-pass"-button visibility
-    if ($('#pov_tab_container .pov-second-row .purchase-pass:not([style*="display:none"]):not([style*="display: none"])').length) {
+    if ($('#pov_tab_container .potions-paths-second-row .purchase-pass:not([style*="display:none"]):not([style*="display: none"])').length) {
+        nbReward = 1;
+    }
+    else {
+        nbReward = 2;
+    }
+    var obj;
+    if (arrayz.length > 0) {
+        for (var i2 = arrayz.length - 1; i2 >= 0; i2--) {
+            obj = $(arrayz[i2]).find('.claimed-slot:not([style*="display:none"]):not([style*="display: none"])');
+            if (obj.length >= nbReward) {
+                //console.log("width : "+arrayz[i2].offsetWidth);
+                //document.getElementById('rewards_cont_scroll').scrollLeft-=arrayz[i2].offsetWidth;
+                arrayz[i2].style.display = "none";
+                modified = true;
+            }
+        }
+    }
+
+    if (modified) {
+        let divToModify = $('.pov-progress-bar-section');
+        if (divToModify.length > 0) {
+            $('.pov-progress-bar-section')[0].scrollTop = '0';
+        }
+    }
+}
+
+function moduleSimPoGMaskReward() {
+    var arrayz;
+    var nbReward;
+    let modified = false;
+    arrayz = $('.potions-paths-tier:not([style*="display:none"]):not([style*="display: none"])');
+    //doesn sure about  " .purchase-pov-pass"-button visibility
+    if ($('#pog_tab_container .potions-paths-second-row .purchase-pass:not([style*="display:none"]):not([style*="display: none"])').length) {
         nbReward = 1;
     }
     else {
@@ -1586,10 +1652,11 @@ function collectAndUpdatePowerPlaces() {
         clearTimer('minPowerPlacesTime');
         clearTimer('maxPowerPlacesTime');
         for (e in unsafeWindow.HHTimers.timers) {
-            try {
-                if (unsafeWindow.HHTimers.timers[e].$elm.selector.includes(".pop_thumb")) {
-                    //logHHAuto("found timer "+HHTimers.timers[e].$elm.context.outerHTML);
-                    currIndex = $(HHTimers.timers[e].$elm.context.outerHTML).attr('pop_id');
+            if (!unsafeWindow.HHTimers.timers[e].$elm) { continue; }
+            let element = unsafeWindow.HHTimers.timers[e].$elm[0];
+            while (element) {
+                if (element.classList && element.classList.contains("pop_thumb")) {
+                    currIndex = $(unsafeWindow.HHTimers.timers[e].$elm[0]).parents('.pop_thumb_expanded').attr('pop_id');
                     //if index is in filter
                     if (filteredPops.includes(currIndex) && !popUnableToStart.includes(currIndex)) {
                         currTime = unsafeWindow.HHTimers.timers[e].remainingTime;
@@ -1601,10 +1668,9 @@ function collectAndUpdatePowerPlaces() {
                             maxTime = currTime;
                         }
                     }
+                    break;
                 }
-            }
-            catch (e) {
-                logHHAuto("Catched error : Could not parse powerplace timer : " + e);
+                element = element.parentNode;
             }
         }
 
@@ -1823,8 +1889,6 @@ function doContestStuff() {
         return false;
     }
 }
-
-
 
 function filterGirlMapReadyForCollect(a) {
     return a.readyForCollect;
@@ -2552,7 +2616,6 @@ var doClubChampionStuff = function () {
 
 
 
-
 function customMatchRating(inSimu) {
     let matchRating = inSimu.score;
     var customLimits = getStoredValue("HHAuto_Setting_calculatePowerLimits").split(";");
@@ -2778,7 +2841,7 @@ function goAndCollectPoV() {
             logHHAuto("setting autoloop to false");
             setStoredValue("HHAuto_Temp_autoLoop", "false");
             let buttonsToCollect = [];
-            const listPoVTiersToClaim = $("#pov_tab_container div.pov-second-row div.pov-central-section div.pov-tier.unclaimed");
+            const listPoVTiersToClaim = $("#pov_tab_container div.potions-paths-second-row div.potions-paths-central-section div.potions-paths-tier.unclaimed");
             for (let currentTier = 0; currentTier < listPoVTiersToClaim.length; currentTier++) {
                 const currentButton = $("button[rel='claim']", listPoVTiersToClaim[currentTier])[0];
                 const currentTierNb = currentButton.getAttribute("tier");
@@ -2827,6 +2890,69 @@ function goAndCollectPoV() {
         else {
             logHHAuto("Switching to Path of Valor screen.");
             gotoPage(getHHScriptVars("pagesIDPoV"));
+            return true;
+        }
+    }
+}
+
+function goAndCollectPoG() {
+    const rewardsToCollect = isJSON(getStoredValue("HHAuto_Setting_autoPoGCollectablesList")) ? JSON.parse(getStoredValue("HHAuto_Setting_autoPoGCollectablesList")) : [];
+
+    if (checkTimer('nextPoGCollectTime') && getStoredValue("HHAuto_Setting_autoPoGCollect") === "true") {
+        if (getPage() === getHHScriptVars("pagesIDPoG")) {
+            logHHAuto("Checking Path of Glory for collectable rewards.");
+            logHHAuto("setting autoloop to false");
+            setStoredValue("HHAuto_Temp_autoLoop", "false");
+            let buttonsToCollect = [];
+            const listPoGTiersToClaim = $("#pog_tab_container div.potions-paths-second-row div.potions-paths-central-section div.potions-paths-tier.unclaimed");
+            for (let currentTier = 0; currentTier < listPoGTiersToClaim.length; currentTier++) {
+                const currentButton = $("button[rel='claim']", listPoGTiersToClaim[currentTier])[0];
+                const currentTierNb = currentButton.getAttribute("tier");
+                //console.log("checking tier : "+currentTierNb);
+                const freeSlotType = getRewardTypeBySlot($(".free-slot .slot,.free-slot .shards_girl_ico", listPoGTiersToClaim[currentTier])[0]);
+                if (rewardsToCollect.includes(freeSlotType)) {
+                    const paidSlots = $(".paid-slots:not(.paid-locked) .slot,.paid-slots:not(.paid-locked) .shards_girl_ico", listPoGTiersToClaim[currentTier]);
+                    if (paidSlots.length > 0) {
+                        if (rewardsToCollect.includes(getRewardTypeBySlot(paidSlots[0])) && rewardsToCollect.includes(getRewardTypeBySlot(paidSlots[1]))) {
+                            buttonsToCollect.push(currentButton);
+                            logHHAuto("Adding for collection tier (with paid) : " + currentTierNb);
+                        }
+                    }
+                    else {
+                        buttonsToCollect.push(currentButton);
+                        logHHAuto("Adding for collection tier (only free) : " + currentTierNb);
+                    }
+                }
+            }
+
+
+            if (buttonsToCollect.length > 0) {
+                function collectPoGRewards() {
+                    if (buttonsToCollect.length > 0) {
+                        logHHAuto("Collecting tier : " + buttonsToCollect[0].getAttribute('tier'));
+                        buttonsToCollect[0].click();
+                        buttonsToCollect.shift();
+                        setTimeout(collectPoGRewards, randomInterval(300, 500));
+                    }
+                    else {
+                        logHHAuto("Path of Glory collection finished.");
+                        setTimer('nextPoGCollectTime', getHHScriptVars("maxCollectionDelay"));
+                        gotoPage(getHHScriptVars("pagesIDHome"));
+                    }
+                }
+                collectPoGRewards();
+                return true;
+            }
+            else {
+                logHHAuto("No Path of Glory reward to collect.");
+                setTimer('nextPoGCollectTime', getHHScriptVars("maxCollectionDelay"));
+                gotoPage(getHHScriptVars("pagesIDHome"));
+                return false;
+            }
+        }
+        else {
+            logHHAuto("Switching to Path of Glory screen.");
+            gotoPage(getHHScriptVars("pagesIDPoG"));
             return true;
         }
     }
@@ -3110,7 +3236,7 @@ var doLeagueBattle = function () {
                 gotoPage(getHHScriptVars("pagesIDLeaderboard"))
             }
         }
-        //logHHAuto('ls! '+$('h4.leagues').size());
+        //logHHAuto('ls! '+$('h4.leagues').length);
         $('h4.leagues').each(function () { this.click(); });
 
         if (currentPower < 1) {
@@ -3121,7 +3247,7 @@ var doLeagueBattle = function () {
             return;
         }
 
-        while ($("span[sort_by='level'][select='asc']").size() == 0) {
+        while ($("span[sort_by='level'][select='asc']").length == 0) {
             //logHHAuto('resorting');
             $("span[sort_by='level']").each(function () { this.click() });
         }
@@ -3159,7 +3285,7 @@ var doLeagueBattle = function () {
                 }
                 logHHAuto("Current league above target (" + Number(getPlayerCurrentLevel) + "/" + Number(getStoredValue("HHAuto_Temp_leaguesTarget")) + "), needs to demote. max rank : " + rankDemote + "/" + totalOpponents);
                 let getRankDemote = $("div.leagues_table table tr td span:contains(" + rankDemote + ")").filter(function () {
-                    return Number($.trim($(this).text())) === rankDemote;
+                    return Number($(this).text().trim()) === rankDemote;
                 });
                 if (getRankDemote.length > 0) {
                     maxDemote = Number(getRankDemote.parent().parent()[0].lastElementChild.innerText.replace(/\D/g, ''));
@@ -3192,7 +3318,7 @@ var doLeagueBattle = function () {
                 }
                 logHHAuto("Current league is target (" + Number(getPlayerCurrentLevel) + "/" + Number(getStoredValue("HHAuto_Temp_leaguesTarget")) + "), needs to stay. max rank : " + rankStay);
                 let getRankStay = $("div.leagues_table table tr td span:contains(" + rankStay + ")").filter(function () {
-                    return Number($.trim($(this).text())) === rankStay;
+                    return Number($(this).text().trim()) === rankStay;
                 });
                 if (getRankStay.length > 0) {
                     maxStay = Number(getRankStay.parent().parent()[0].lastElementChild.innerText.replace(/\D/g, ''));
@@ -3324,8 +3450,14 @@ function getLeagueOpponentId(opponentsIDList, force = false) {
         let league_end = -1;
         let maxLeagueListDurationSecs = getHHScriptVars("LeagueListExpirationSecs");
         for (let e in HHTimers.timers) {
-            if (HHTimers.timers[e].$elm && HHTimers.timers[e].$elm.selector.startsWith(".league_end_in")) {
-                league_end = HHTimers.timers[e].remainingTime;
+            if (!unsafeWindow.HHTimers.timers[e].$elm) { continue; }
+            let element = unsafeWindow.HHTimers.timers[e].$elm[0];
+            while (element) {
+                if (element.classList && element.classList.contains("league_end_in")) {
+                    league_end = HHTimers.timers[e].remainingTime;
+                    break;
+                }
+                element = element.parentNode;
             }
         }
         if (league_end !== -1 && league_end < maxLeagueListDurationSecs) {
@@ -3879,8 +4011,14 @@ var getFreeGreatPachinko = function () {
             }
             var npach = -1;
             for (let e in unsafeWindow.HHTimers.timers) {
-                if (unsafeWindow.HHTimers.timers[e].$elm && unsafeWindow.HHTimers.timers[e].$elm.selector.startsWith(".pachinko_change")) {
-                    npach = unsafeWindow.HHTimers.timers[e].remainingTime;
+                if (!unsafeWindow.HHTimers.timers[e].$elm) { continue; }
+                let element = unsafeWindow.HHTimers.timers[e].$elm[0];
+                while (element) {
+                    if (element.classList && element.classList.contains("pachinko_change")) {
+                        npach = unsafeWindow.HHTimers.timers[e].remainingTime;
+                        break;
+                    }
+                    element = element.parentNode;
                 }
             }
             if (npach !== -1) {
@@ -3943,8 +4081,16 @@ var getFreeMythicPachinko = function () {
             //}
             var npach = -1;
             for (var e in unsafeWindow.HHTimers.timers) {
-                if (unsafeWindow.HHTimers.timers[e].$elm && unsafeWindow.HHTimers.timers[e].$elm.selector.startsWith('.game-simple-block[type-pachinko="mythic"]'))
-                    npach = unsafeWindow.HHTimers.timers[e].remainingTime;
+                if (!unsafeWindow.HHTimers.timers[e].$elm) { continue; }
+                let element = unsafeWindow.HHTimers.timers[e].$elm[0];
+                while (element) {
+                    if (element.classList && element.classList.contains("game-simple-block") && element.attributes
+                        && element.attributes['type-pachinko'] && element.attributes['type-pachinko'].value === "mythic") {
+                        npach = unsafeWindow.HHTimers.timers[e].remainingTime;
+                        break;
+                    }
+                    element = element.parentNode;
+                }
             }
             if (npach !== -1) {
                 setTimer('nextPachinko2Time', Number(npach) + 1);
@@ -3994,8 +4140,15 @@ var updateShop = function () {
 
         var nshop;
         for (var e in unsafeWindow.HHTimers.timers) {
-            if (unsafeWindow.HHTimers.timers[e].$elm && unsafeWindow.HHTimers.timers[e].$elm.selector.startsWith(".shop_count"))
-                nshop = unsafeWindow.HHTimers.timers[e].remainingTime;
+            if (!unsafeWindow.HHTimers.timers[e].$elm) { continue; }
+            let element = unsafeWindow.HHTimers.timers[e].$elm[0];
+            while (element) {
+                if (element.classList && element.classList.contains("shop_count")) {
+                    nshop = unsafeWindow.HHTimers.timers[e].remainingTime;
+                    break;
+                }
+                element = element.parentNode;
+            }
         }
         let shopTimer = 60;
         if (nshop !== undefined && nshop !== 0) {
@@ -4391,7 +4544,7 @@ function getLeaguePlayersData(inHeroLeaguesData, inPlayerLeaguesData) {
         chance: playerCrit,
         damage: playerAtk,
         defense: playerDef,
-        total_ego: playerEgo,
+        remaining_ego: playerEgo,
         team: playerTeam
     } = inHeroLeaguesData
     let playerElements;
@@ -4418,7 +4571,7 @@ function getLeaguePlayersData(inHeroLeaguesData, inPlayerLeaguesData) {
         chance: opponentCrit,
         damage: opponentAtk,
         defense: opponentDef,
-        total_ego: opponentEgo,
+        remaining_ego: opponentEgo,
         team: opponentTeam
     } = inPlayerLeaguesData
 
@@ -5295,7 +5448,7 @@ var autoLoop = function () {
         }
 
         if (busy === false && getHHScriptVars("isEnabledContest", false) && getStoredValue("HHAuto_Setting_autoContest") === "true" && getStoredValue("HHAuto_Temp_autoLoop") === "true") {
-            if (checkTimer('nextContestTime') || unsafeWindow.has_contests_datas || $(".contest .ended button[rel='claim']").size() > 0) {
+            if (checkTimer('nextContestTime') || unsafeWindow.has_contests_datas || $(".contest .ended button[rel='claim']").length > 0) {
                 logHHAuto("Time to get contest rewards.");
                 busy = doContestStuff();
             }
@@ -5578,6 +5731,12 @@ var autoLoop = function () {
             busy = goAndCollectPoV();
         }
 
+        if (busy == false && getHHScriptVars("isEnabledPoG", false) && getStoredValue("HHAuto_Temp_autoLoop") === "true" && checkTimer('nextPoGCollectTime') && getStoredValue("HHAuto_Setting_autoPoGCollect") === "true") {
+            logHHAuto("Time to go and check Path of Glory for collecting reward.");
+            busy = true;
+            busy = goAndCollectPoG();
+        }
+
         if (busy == false && getHHScriptVars("isEnabledDailyRewards", false) && getStoredValue("HHAuto_Temp_autoLoop") === "true" && checkTimer('nextDailyRewardsCollectTime') && getStoredValue("HHAuto_Setting_autoDailyRewardsCollect") === "true") {
             busy = true;
             logHHAuto("Time to go and check Daily Rewards for collecting reward.");
@@ -5677,13 +5836,11 @@ var autoLoop = function () {
             if (getStoredValue("HHAuto_Setting_showMarketTools") === "true") {
                 moduleShopActions();
             }
-            if (getSecondsLeft('nextShopTime') < 3600) {
-                updateShop();
-            }
             moduleShopGetBoosters();
             break;
         case getHHScriptVars("pagesIDHome"):
             displayPoVRemainingTime();
+            displayPoGRemainingTime();
             break;
         case getHHScriptVars("pagesIDHarem"):
             moduleHarem();
@@ -5706,6 +5863,12 @@ var autoLoop = function () {
                 moduleSimPoVMaskReward();
             }
             getPoVRemainingTime();
+            break;
+        case getHHScriptVars("pagesIDPoG"):
+            if (getStoredValue("HHAuto_Setting_PoGMaskRewards") === "true") {
+                moduleSimPoGMaskReward();
+            }
+            getPoGRemainingTime();
             break;
     }
 
@@ -7055,13 +7218,13 @@ function moduleShopActions() {
         function setSlotFilter(inCaracsValue, inTypeValue, inRarityValue, inLockedValue) {
             let filter = '#inventory .selected .inventory_slots .slot:not(.empty)';
             if (inCaracsValue !== "*") {
-                filter += '[data-d*="\"name_add\":\"' + inCaracsValue + '\""]';
+                filter += '[data-d*=\'"name_add":"' + inCaracsValue + '"\']';
             }
             if (inTypeValue !== "*") {
-                filter += '[data-d*="\"subtype\":\"' + inTypeValue + '\""]';
+                filter += '[data-d*=\'"subtype":"' + inTypeValue + '"\']';
             }
             if (inRarityValue !== "*") {
-                filter += '[data-d*="\"rarity\":\"' + inRarityValue + '\""]';
+                filter += '[data-d*=\'"rarity":"' + inRarityValue + '"\']';
             }
             if (inLockedValue === "locked" || inLockedValue === true) {
                 filter += '[menuSellLocked]';
@@ -8473,7 +8636,6 @@ function cmpVersions(a, b) {
     return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
 }
 
-
 function getHHScriptVars(id, logNotFound = true) {
     let environnement = "global";
     if (HHKnownEnvironnements[window.location.hostname] !== undefined) {
@@ -8498,7 +8660,6 @@ function getHHScriptVars(id, logNotFound = true) {
     }
 }
 
-
 function compareOwnFirst(a, b, final_comparaison) {
     if (a.own && !b.own) {
         return -1
@@ -8507,7 +8668,6 @@ function compareOwnFirst(a, b, final_comparaison) {
     }
     return final_comparaison
 }
-
 
 const HC = 1;
 const CH = 2;
@@ -9361,6 +9521,17 @@ HHStoredVars.HHAuto_Setting_PoVMaskRewards =
     menuType: "checked",
     kobanUsing: false
 };
+HHStoredVars.HHAuto_Setting_PoGMaskRewards =
+{
+    default: "false",
+    storage: "Storage()",
+    HHType: "Setting",
+    valueType: "Boolean",
+    getMenu: true,
+    setMenu: true,
+    menuType: "checked",
+    kobanUsing: false
+};
 HHStoredVars.HHAuto_Setting_SeasonMaskRewards =
 {
     default: "false",
@@ -9529,6 +9700,32 @@ HHStoredVars.HHAuto_Setting_autoPoVCollect =
     }
 };
 HHStoredVars.HHAuto_Setting_autoPoVCollectablesList =
+{
+    default: JSON.stringify([]),
+    storage: "Storage()",
+    HHType: "Setting",
+    valueType: "Array"
+};
+HHStoredVars.HHAuto_Setting_autoPoGCollect =
+{
+    default: "false",
+    storage: "Storage()",
+    HHType: "Setting",
+    valueType: "Boolean",
+    getMenu: true,
+    setMenu: true,
+    menuType: "checked",
+    kobanUsing: false,
+    events: {
+        "change": function () {
+            if (this.checked) {
+                getAndStoreCollectPreferences("HHAuto_Setting_autoPoGCollectablesList");
+                clearTimer('nextPoGCollectTime');
+            }
+        }
+    }
+};
+HHStoredVars.HHAuto_Setting_autoPoGCollectablesList =
 {
     default: JSON.stringify([]),
     storage: "Storage()",
@@ -9780,6 +9977,11 @@ HHStoredVars.HHAuto_Temp_PoVEndDate =
     storage: "localStorage",
     HHType: "Temp"
 };
+HHStoredVars.HHAuto_Temp_PoGEndDate =
+{
+    storage: "localStorage",
+    HHType: "Temp"
+};
 HHStoredVars.HHAuto_Temp_missionsGiftLeft =
 {
     storage: "sessionStorage",
@@ -9797,9 +9999,8 @@ HHStoredVars.HHAuto_Temp_unkownPagesList =
 };
 
 
-
 function maskInactiveMenus() {
-    let menuIDList = ["isEnabledDailyGoals", "isEnabledPoV", "isEnabledDailyRewards", "isEnabledMission", "isEnabledContest", "isEnabledTrollBattle", "isEnabledPowerPlaces", "isEnabledSalary", "isEnabledPachinko", "isEnabledQuest", "isEnabledSideQuest", "isEnabledSeason", "isEnabledLeagues", "isEnabledAllChamps", "isEnabledChamps", "isEnabledClubChamp", "isEnabledPantheon", "isEnabledShop"];
+    let menuIDList = ["isEnabledDailyGoals", "isEnabledPoVPoG", "isEnabledPoV", "isEnabledPoG", "isEnabledDailyRewards", "isEnabledMission", "isEnabledContest", "isEnabledTrollBattle", "isEnabledPowerPlaces", "isEnabledSalary", "isEnabledPachinko", "isEnabledQuest", "isEnabledSideQuest", "isEnabledSeason", "isEnabledLeagues", "isEnabledAllChamps", "isEnabledChamps", "isEnabledClubChamp", "isEnabledPantheon", "isEnabledShop"];
     for (let menu of menuIDList) {
         if (document.getElementById(menu) !== null && getHHScriptVars(menu, false) !== null && !getHHScriptVars(menu, false)) {
             document.getElementById(menu).style.visibility = "hidden";
@@ -10127,16 +10328,7 @@ function simuFight(player, opponent) {
 }
 
 
-/*
-commented      const logging = loadSetting("logSimFight");
-commented all  if (logging)
-replaced       STOCHASTIC_SIM_RUNS
-            by getHHScriptVars("STOCHASTIC_SIM_RUNS")
-            */
 
-
-/*
-*/
 function simulateBattle(player, opponent) {
     let points
 
@@ -10183,8 +10375,6 @@ function simulateBattle(player, opponent) {
     return { points, turns }
 }
 
-
-
 function countElementsInTeam(elements) {
     return elements.reduce((a, b) => { a[b]++; return a }, {
         fire: 0,
@@ -10197,3 +10387,5 @@ function countElementsInTeam(elements) {
         psychic: 0
     })
 }
+
+
