@@ -1,6 +1,3 @@
-// ==UserScript==
-// @namespace    https://github.com/HScriptHeroes/HHAuto
-// ==UserScript==
 
 var CollectMoney = function () {
     var Clicked = [];
@@ -203,7 +200,6 @@ function moduleHaremExportGirlsData() {
     if (document.getElementById(menuID) === null) {
         $("#contains_all section").prepend(ExportGirlsData);
         document.getElementById("ExportGirlsDataButton").addEventListener("click", saveHHGirlsAsCSV);
-        GM_registerMenuCommand(getTextForUI(menuID, "elementText"), saveHHGirlsAsCSV);
     }
     else {
         return;
