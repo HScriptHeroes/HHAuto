@@ -1,3 +1,7 @@
+// ==UserScript==
+// @namespace    https://github.com/HScriptHeroes/HHAuto
+// ==UserScript==
+
 var CollectMoney = function () {
     var Clicked = [];
     var endCollectTS = -1;
