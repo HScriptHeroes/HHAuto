@@ -1454,6 +1454,4 @@ var createUI = function () {
     }
     getPage(true);
     setTimeout(autoLoop, 1000);
-    GM_registerMenuCommand(getTextForUI("translate", "elementText"), manageTranslationPopUp);
-
 };
