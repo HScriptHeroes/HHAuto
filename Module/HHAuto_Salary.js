@@ -192,3 +192,80 @@ var getSalary = function () {
         return false;
     }
 };
+
+function moduleHaremExportGirlsData() {
+    const menuID = "ExportGirlsData";
+    let ExportGirlsData = `<div style="position: absolute;left: 36%;top: 20px;width:60px;z-index:10" class="tooltipHH" id="${menuID}"><span class="tooltipHHtext">${getTextForUI("ExportGirlsData", "tooltip")}</span><label style="font-size:small" class="myButton" id="ExportGirlsDataButton">${getTextForUI("ExportGirlsData", "elementText")}</label></div>`;
+    if (document.getElementById(menuID) === null) {
+        $("#contains_all section").prepend(ExportGirlsData);
+        document.getElementById("ExportGirlsDataButton").addEventListener("click", saveHHGirlsAsCSV);
+        GM_registerMenuCommand(getTextForUI(menuID, "elementText"), saveHHGirlsAsCSV);
+    }
+    else {
+        return;
+    }
+
+
+    function saveHHGirlsAsCSV() {
+        var dataToSave = "";
+        dataToSave = extractHHGirls();
+        var name = 'HH_GirlData_' + Date.now() + '.csv';
+        const a = document.createElement('a')
+        a.download = name
+        a.href = URL.createObjectURL(new Blob([dataToSave], { type: 'text/plain' }))
+        a.click()
+    }
+
+    function extractHHGirls() {
+        dataToSave = "Name,Rarity,Class,Figure,Level,Stars,Of,Left,Hardcore,Charm,Know-how,Total,Position,Eyes,Hair,Zodiac,Own\r\n";
+        var gMap = getHHVars('GirlSalaryManager.girlsMap');
+        if (gMap === null) {
+            // error
+            logHHAuto("Girls Map was undefined...! Error, cannot export girls.");
+        }
+        else {
+            try {
+                var cnt = 1;
+                for (var key in gMap) {
+                    cnt++;
+                    var gData = gMap[key].gData;
+                    dataToSave += gData.name + ",";
+                    dataToSave += gData.rarity + ",";
+                    dataToSave += gData.class + ",";
+                    dataToSave += gData.figure + ",";
+                    dataToSave += gData.level + ",";
+                    dataToSave += gData.graded + ",";
+                    dataToSave += gData.nb_grades + ",";
+                    dataToSave += Number(gData.nb_grades) - Number(gData.graded) + ",";
+                    dataToSave += gData.caracs.carac1 + ",";
+                    dataToSave += gData.caracs.carac2 + ",";
+                    dataToSave += gData.caracs.carac3 + ",";
+                    dataToSave += Number(gData.caracs.carac1) + Number(gData.caracs.carac2) + Number(gData.caracs.carac3) + ",";
+                    dataToSave += gData.position_img + ",";
+                    dataToSave += stripSpan(gData.ref.eyes) + ",";
+                    dataToSave += stripSpan(gData.ref.hair) + ",";
+                    dataToSave += gData.ref.zodiac.substring(3) + ",";
+                    dataToSave += gData.own + "\r\n";
+
+                }
+                //            logHHAuto(dataToSave);
+
+            }
+            catch (exp) {
+                // error
+                logHHAuto("Catched error : Girls Map had undefined property...! Error, cannot export girls : " + exp);
+            }
+        }
+        return dataToSave;
+    }
+
+    function stripSpan(tmpStr) {
+        var newStr = "";
+        while (tmpStr.indexOf(">") > -1) {
+            tmpStr = tmpStr.substring(tmpStr.indexOf(">") + 1);
+            newStr += tmpStr.slice(0, tmpStr.indexOf("<"));
+            //        tmpStr = tmpStr.substring(tmpStr.indexOf(">")+1);
+        }
+        return newStr;
+    }
+}
