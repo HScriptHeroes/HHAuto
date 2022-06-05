@@ -28,6 +28,7 @@
 // @require https://raw.githubusercontent.com/HScriptHeroes/HHAuto/main/MathFunctions/HHAuto_CalculateFunctions.js?2
 // @require https://raw.githubusercontent.com/HScriptHeroes/HHAuto/main/GlobalVars/HHAuto_HHKnownEnvironnements.js?2
 // @require https://raw.githubusercontent.com/HScriptHeroes/HHAuto/main/GlobalVars/HHAuto_HHEnvVariables.js?2
+// @require https://raw.githubusercontent.com/HScriptHeroes/HHAuto/main/Module/HHAuto_Harem.js?2
 
 // ==/UserScript==
 
@@ -1521,6 +1522,7 @@ function haremOpenFirstXUpgradable() {
 
 }
 
+
 function moduleHaremExportGirlsData() {
     const menuID = "ExportGirlsData";
     let ExportGirlsData = `<div style="position: absolute;left: 36%;top: 20px;width:60px;z-index:10" class="tooltipHH" id="${menuID}"><span class="tooltipHHtext">${getTextForUI("ExportGirlsData", "tooltip")}</span><label style="font-size:small" class="myButton" id="ExportGirlsDataButton">${getTextForUI("ExportGirlsData", "elementText")}</label></div>`;
@@ -1597,7 +1599,7 @@ function moduleHaremExportGirlsData() {
         return newStr;
     }
 }
-
+* /
 function collectAndUpdatePowerPlaces() {
     if (getPage() !== getHHScriptVars("pagesIDPowerplacemain")
     ) {
@@ -1897,7 +1899,7 @@ function filterGirlMapReadyForCollect(a) {
 function filterGirlMapCanUpgrade(a) {
     return a.gData.can_upgrade;
 }
-
+/*BORRAME
 var CollectMoney = function () {
     var Clicked = [];
     //var ToClick=[];
@@ -2119,7 +2121,7 @@ var getSalary = function () {
         return false;
     }
 };
-
+*/
 var doStatUpgrades = function () {
     //Stats?
     //logHHAuto('stats');
