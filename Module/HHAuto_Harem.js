@@ -1,3 +1,8 @@
+function filterGirlMapReadyForCollect(a) {
+    return a.readyForCollect;
+}
+
+
 
 var CollectMoney = function () {
     var Clicked = [];
